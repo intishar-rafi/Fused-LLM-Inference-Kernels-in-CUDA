@@ -1,6 +1,6 @@
 # Fused LLM Inference Kernels in CUDA
 
-A CUDA kernel library implementing the core compute path of a transformer's feed-forward block — from warp-level primitives up to a fused, working forward pass.
+Implementing a CUDA kernel library covering the core compute path of a modern transformer's inference stack — warp-level reductions, RMSNorm, LayerNorm, numerically stable softmax, rotary positional embeddings (RoPE), token embedding lookup, and a fused SwiGLU MLP block, composed into a working end-to-end feed-forward forward pass. Every kernel was implemented from scratch, unit-tested individually, and then assembled into one verified pipeline.
 
 ```
 residual_out = x + residual
@@ -34,7 +34,7 @@ graph TD
     style G2 fill:#a8c6ff,stroke:#1a1a1a,stroke-width:3px,color:#000000
 ```
 
-Not pictured (independent utility kernels, not on the FFN path): `gelu_kernel`, `silu_kernel`, `embedding_lookup_kernel`, `rope_kernel`.
+The diagram traces only the kernels that feed into the final `run_transformer_ffn` chain. Four kernels are built and tested but sit outside that specific path: `gelu_kernel` and `silu_kernel` are standalone activations not called by the final SwiGLU route (SwiGLU computes its own SiLU inline); `embedding_lookup_kernel` and `rope_kernel` belong to the token-embedding and positional-encoding stages of a transformer, upstream of the FFN block shown here.
 
 ## Kernels
 
