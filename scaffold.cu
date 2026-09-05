@@ -120,3 +120,4 @@ int main() {
     cudaFree(d_sin); cudaFree(d_q); cudaFree(d_k); cudaFree(d_lin); cudaFree(d_ids);
     return 0;
 }
+
